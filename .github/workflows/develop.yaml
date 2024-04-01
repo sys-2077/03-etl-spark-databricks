@@ -27,4 +27,4 @@ jobs:
 
     - name: Upload script to DBFS
       run: |
-        databricks fs cp script.py dbfs:/scripts/script.py
+        databricks fs cp codes/script.py dbfs:/scripts/script.py
