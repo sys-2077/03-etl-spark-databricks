@@ -1,0 +1,63 @@
+name: Databricks Development Workflow
+
+on:
+  pull_request:
+    branches: [dev]
+
+jobs:
+  databricks-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Databricks CLI
+      run: |
+        pip install databricks-cli
+
+    - name: Authenticate with Databricks
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
+      run: |
+        databricks configure --token
+
+    - name: Upload script to DBFS
+      run: |
+        databricks fs cp script.py dbfs:/scripts/script.py
+
+    - name: Execute script on Databricks cluster
+      id: execute_script
+      run: |
+        output=$(databricks jobs run-now --json '{
+          "run_name": "GitHub Actions Run",
+          "existing_cluster_id": "${{ secrets.DATABRICKS_DEV_CLUSTER_ID }}",
+          "notebook_task": {
+            "notebook_path": "/scripts/script.py"
+          }
+        }' --output json)
+        
+        run_id=$(echo "$output" | jq -r '.run_id')
+        echo "::set-output name=run_id::$run_id"
+
+    - name: Check execution status
+      env:
+        RUN_ID: ${{ steps.execute_script.outputs.run_id }}
+      run: |
+        status=$(databricks runs get --run-id $RUN_ID --output json | jq -r '.state.life_cycle_state')
+        echo "Execution status: $status"
+        
+        if [ "$status" == "TERMINATED" ]; then
+          result_state=$(databricks runs get --run-id $RUN_ID --output json | jq -r '.state.result_state')
+          echo "Result state: $result_state"
+          
+          if [ "$result_state" == "SUCCESS" ]; then
+            echo "Script executed successfully"
+          else
+            echo "Script execution failed"
+            exit 1
+          fi
+        else
+          echo "Unexpected execution status: $status"
+          exit 1
+        fi
