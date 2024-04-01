@@ -21,8 +21,8 @@ jobs:
 
     - name: Create directory in DBFS
       run: |
-      databricks fs mkdirs dbfs:/scripts
+        databricks fs mkdirs dbfs:/scripts
 
     - name: Upload script to DBFS
       run: |
-      databricks fs cp codes/script.py dbfs:/scripts/script.py
+        databricks fs cp codes/script.py dbfs:/scripts/script.py
