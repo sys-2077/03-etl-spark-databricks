@@ -2,10 +2,10 @@ name: Databricks Development Workflow
 
 on:
   pull_request:
-    branches: [develop]
+    branches: [production]
 env:
-  DATABRICKS_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
-  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_PRD_HOST }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PRD_TOKEN }}
 jobs:
   databricks-dev:
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
       run: |
         databricks jobs create --json '{
           "name": "job-dev",
-          "existing_cluster_id": "${{ secrets.DATABRICKS_DEV_CLUSTER_ID }}",
+          "existing_cluster_id": "${{ secrets.DATABRICKS_PRD_CLUSTER_ID }}",
           "notebook_task": {
             "notebook_path": "/scripts/script.py"
           }
