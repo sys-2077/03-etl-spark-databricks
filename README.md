@@ -1,6 +1,6 @@
 # Databricks Development Workflow - Phase 2
 
-<img src="https://cloud.githubusercontent.com/assets/4307137/10105283/251b6868-63ae-11e5-9918-b789d9d682ec.png" width="30%"></img> 
+<img src="https://github.com/sys-2077/03-etl-spark-databricks/assets/127072666/05f6bfc2-eaf7-499f-9714-b29df0aed580" width="90%"></img>
 
 This project focuses on the second phase of the Databricks Development Workflow, which aims to streamline the development and deployment process for Databricks notebooks and scripts. The main objective is to establish a seamless integration between the development and production environments using Git branches and GitHub Actions.
 
