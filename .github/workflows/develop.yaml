@@ -26,3 +26,12 @@ jobs:
     - name: Upload script to DBFS
       run: |
         databricks fs cp codes/script.py dbfs:/scripts/script.py
+    - name: Create Job
+      run: |
+        databricks jobs create --json '{
+          "name": "Local Job",
+          "existing_cluster_id": "${{ secrets.DATABRICKS_DEV_CLUSTER_ID }}",
+          "notebook_task": {
+            "notebook_path": "/scripts/script.py"
+          }
+        }'
