@@ -3,7 +3,10 @@ name: Databricks Development Workflow
 on:
   pull_request:
     branches: [develop]
-
+env:
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
+  #DATABRICKS_DEV_CLUSTER_ID: ${{ secrets.DATABRICKS_DEV_CLUSTER_ID }}
 jobs:
   databricks-dev:
     runs-on: ubuntu-latest
@@ -19,14 +22,9 @@ jobs:
     # List the databricks repos within the workspace whose credentials
     # are stored in the Github Environment "my-environment"
     - name: List databricks repos
-      env:
-        # Note the host is an "environment variable" in the Github Environment
-        # while the token is a "secret" in the Github Environment
-        DATABRICKS_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
-        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
       run: |
         databricks repos list
 
     - name: Upload script to DBFS
       run: |
-        databricks fs cp codes/script.py dbfs:/scripts/script.py
+        databricks fs cp script.py dbfs:/scripts/script.py
