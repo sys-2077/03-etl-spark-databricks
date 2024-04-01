@@ -26,3 +26,7 @@ jobs:
         DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
       run: |
         databricks repos list
+
+    - name: Upload script to DBFS
+      run: |
+        databricks fs cp codes/script.py dbfs:/scripts/script.py
